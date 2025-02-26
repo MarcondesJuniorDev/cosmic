@@ -3,21 +3,23 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PermissionResource\Pages;
-use App\Filament\Resources\PermissionResource\RelationManagers;
 use App\Models\Permission;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PermissionResource extends Resource
 {
     protected static ?string $model = Permission::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shield-check';
+    protected static ?string $pluralLabel = 'Permissões';
+    protected static ?string $label = 'Permissão';
+    protected static ?string $navigationGroup = 'Configurações';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $slug = 'configuracoes/permissoes';
+    protected static ?string $navigationLabel = 'Permissões';
 
     public static function form(Form $form): Form
     {
@@ -26,6 +28,7 @@ class PermissionResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->label('Permissão')
                     ->required()
+                    ->unique(ignoreRecord: true)
                     ->maxLength(255),
                 Forms\Components\Select::make('roles')
                     ->label('Funções')
