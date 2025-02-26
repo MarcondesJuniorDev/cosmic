@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -34,8 +36,13 @@ class UserSeeder extends Seeder
                 "role"=> "user",
             ],
         ];
-        foreach ($users as $user) {
-            User::create($user);
+
+        foreach ($users as $userData) {
+            $roleName = $userData['role'];
+            unset($userData['role']);
+            $user = User::create($userData);
+            $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
+            $user->assignRole($role);
         }
     }
 }
