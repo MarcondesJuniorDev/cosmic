@@ -9,11 +9,11 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\Select;
 use App\Filament\Resources\UserResource\Pages;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
-use Filament\Forms\Components\Select;
 
 class UserResource extends Resource
 {
@@ -43,7 +43,10 @@ class UserResource extends Resource
                     ->maxLength(255),
                     Select::make('roles')
                     ->label('Funções')
-                    ->relationship('roles', 'name')
+                    ->relationship('roles', 'name', fn(Builder $query) =>
+                        auth()->user()->hasRole('admin') ? 
+                        null : 
+                        $query->where('name', '!=', 'admin'))
                     ->preload()
                     ->multiple(),
             ]);
@@ -93,5 +96,15 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {   
+        return auth()->user()->hasRole('admin') ? 
+            parent::getEloquentQuery() : 
+            parent::getEloquentQuery()->whereHas(
+                'roles',
+                fn(Builder $query) => $query->where('name', '!=', 'admin')
+            );
     }
 }
