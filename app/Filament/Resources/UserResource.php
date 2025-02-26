@@ -12,14 +12,19 @@ use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Select;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UserResource\RelationManagers;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?string $pluralLabel = 'Usuários';
+    protected static ?string $label = 'Usuário';
+    protected static ?string $navigationGroup = 'Configurações';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $slug = 'configuracoes/usuarios';
+    protected static ?string $navigationLabel = 'Usuários';
 
     public static function form(Form $form): Form
     {
@@ -33,6 +38,7 @@ class UserResource extends Resource
                     ->label('Email')
                     ->email()
                     ->required()
+                    ->unique(ignoreRecord: true)
                     ->maxLength(255),
                 Forms\Components\TextInput::make('password')
                     ->label('Senha')
