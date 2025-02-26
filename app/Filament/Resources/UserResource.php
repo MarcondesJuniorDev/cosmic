@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
+use Filament\Forms\Components\Select;
 
 class UserResource extends Resource
 {
@@ -40,6 +41,11 @@ class UserResource extends Resource
                     ->dehydrated(fn($state) => filled($state))
                     ->required(fn(string $context) => $context === 'create')
                     ->maxLength(255),
+                    Select::make('roles')
+                    ->label('Funções')
+                    ->relationship('roles', 'name')
+                    ->preload()
+                    ->multiple(),
             ]);
     }
 
