@@ -3,21 +3,25 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\RoleResource\Pages;
-use App\Filament\Resources\RoleResource\RelationManagers;
 use App\Models\Role;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
+
+    protected static ?string $pluralLabel = 'Funções';
+    protected static ?string $label = 'Função';
+    protected static ?string $navigationGroup = 'Configurações';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $slug = 'configuracoes/funcoes';
+    protected static ?string $navigationLabel = 'Funções';
 
     public static function form(Form $form): Form
     {
@@ -26,6 +30,7 @@ class RoleResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->label('Função')
                     ->required()
+                    ->unique(ignoreRecord: true)
                     ->maxLength(255),
                 Forms\Components\Select::make('permissions')
                     ->label('Permissões')
